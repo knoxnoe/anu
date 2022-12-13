@@ -119,6 +119,8 @@ export const ATable = defineComponent({
       return toRefs(Object.fromEntries(cardPropsEntries))
     })
 
+    console.log(`cardprops--${cardProps.value}`)
+
     // 👉 isSST
     const isSST = computedEager(() => !Array.isArray(props.rows))
 
@@ -232,6 +234,7 @@ export const ATable = defineComponent({
     // TODO: Check passing toRef(props, 'pageSize') to useOffsetPagination and use returned `currentPageSize` for reactive pgeSize prop
     const currentPageSize = ref(props.pageSize)
     const paginateRows = ({ currentPage, currentPageSize }: { currentPage: number; currentPageSize: number }) => {
+      console.log(currentPage, currentPageSize)
       const start = (currentPage - 1) * currentPageSize
       const end = currentPage * currentPageSize
 
@@ -263,6 +266,7 @@ export const ATable = defineComponent({
     })
 
     const recalculateCurrentPageData = () => {
+      console.log(currentPage.value)
       if (isSST.value)
         fetchRows()
       else
@@ -412,9 +416,10 @@ export const ATable = defineComponent({
       // 👉 Footer
       // TODO: create PR for useOffsetPagination metadata
       const tableFooter = <div class="a-table-footer flex items-center">
+        <div>{rowsToRender.value.length ? (currentPage.value - 1) * currentPageSize.value + 1 : 0} - {isLastPage.value ? total.value : currentPage.value * currentPageSize.value} of {total.value}</div>
         <ATypography class="text-size-[inherit]" v-slots={{
           subtitle: () => <>
-            {rowsToRender.value.length ? (currentPage.value - 1) * currentPageSize.value + 1 : 0} - {isLastPage ? rowsToRender.value.length : currentPage.value * currentPageSize.value} of {total.value}
+            {rowsToRender.value.length ? (currentPage.value - 1) * currentPageSize.value + 1 : 0} - {isLastPage.value ? total.value : currentPage.value * currentPageSize.value} of {total.value}
           </>,
         }}></ATypography>
         <div class="flex-grow"></div>
